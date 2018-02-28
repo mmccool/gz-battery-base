@@ -28,6 +28,8 @@ pad_h = 2*pad_w + 15 + foot_h1;
 pad_x = 40;
 pad_y = 40;
 pad_r = case_r+2;
+pad_rr = 30/2 + tol;
+pad_hh = 3.4 - 1;
 
 bar_y = 300;
 bar_ey = (case_y/2 - (case_r + foot_ir + pad_w)) - bar_y/2;
@@ -119,6 +121,7 @@ module pad() {
           translate([0,pad_y,-foot_h2])
             cylinder(r=pad_r,h=pad_h+foot_h2,$fn=case_sm);
         }
+        // caster mount
         translate([0,0,-pad_h/2])
           cylinder(r=foot_ir,h=2*pad_h,$fn=case_sm);
         translate([0,0,pad_h-foot_h])
@@ -141,6 +144,11 @@ module pad() {
             translate([0,0,bolt_h])
               cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
           }
+        // indent for cushions
+        translate([pad_x,0,pad_h-pad_hh])
+          cylinder(r=pad_rr,h=pad_h+foot_h2,$fn=case_sm);
+        translate([0,pad_y,pad_h-pad_hh])
+          cylinder(r=pad_rr,h=pad_h+foot_h2,$fn=case_sm);
       }
     }
     ebars();
@@ -171,3 +179,6 @@ module assembly() {
 }
 
 assembly();
+//bars();
+//ebars();
+//color([0.5,0.3,0.3,0.7]) pad();
