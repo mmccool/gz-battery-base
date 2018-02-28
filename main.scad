@@ -20,7 +20,7 @@ case_y = 358;
 case_r = 17;
 case_h = 240;
 case_fh = 5;
-case_sm = 50;
+case_sm = 100;
 case_zo = foot_h;
 
 pad_w = 4;
@@ -178,7 +178,7 @@ module assembly() {
   }
 }
 
-assembly();
+//assembly();
 //bars();
 //ebars();
-//color([0.5,0.3,0.3,0.7]) pad();
+color([0.5,0.3,0.3,0.7]) pad();
