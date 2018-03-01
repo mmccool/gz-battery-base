@@ -12,15 +12,16 @@ use <beam.scad>
 foot_h = 5;
 foot_h1 = 4;
 foot_h2 = 4;
-foot_r = 31.3/2;
-foot_ir = 8/2;
+foot_r = 31.5/2;
+foot_ir = 10/2; // M10 bolt hole
+foot_b = 0.5; // bezel
 
 case_x = 254;
 case_y = 358;
 case_r = 17;
 case_h = 240;
 case_fh = 5;
-case_sm = 100;
+case_sm = 30;
 case_zo = foot_h;
 
 pad_w = 4;
@@ -35,7 +36,15 @@ bar_y = 300;
 bar_ey = (case_y/2 - (case_r + foot_ir + pad_w)) - bar_y/2;
 bar_x = 150;
 bar_ex = (case_x/2 - (case_r + foot_ir + pad_w)) - bar_x/2;
+bar_tol = 0.4;
 bar_h = 15;
+ebar_h = bar_h + 2*bar_tol;
+
+bolt_m3_hole_r = 3.2/2;
+bolt_m3_cap_r = 6/2;
+bolt_h = 4;
+bolt_o = 5;
+bolt_sm = 20;
 
 washer_r = 11;
 washer_h = 1.5;
@@ -90,46 +99,63 @@ module bars() {
 se = (1-tol);
 module ebars() {
   translate([-bar_x/2-bar_ex,-case_y/2+bar_h/2+pad_w,-pad_w]) 
-    translate([0,-15/2,-15])
-      cube([bar_x+2*bar_ex,15,15]);
+    translate([0,-ebar_h/2,-ebar_h+bar_tol])
+      cube([bar_x+2*bar_ex,ebar_h,ebar_h]);
   translate([-bar_x/2-bar_ex, case_y/2-bar_h/2-pad_w,-pad_w])
-    translate([0,-15/2,-15])
-      cube([bar_x+2*bar_ex,15,15]);
+    translate([0,-ebar_h/2,-ebar_h+bar_tol])
+      cube([bar_x+2*bar_ex,ebar_h,ebar_h]);
   translate([-case_x/2+bar_h/2+pad_w, -bar_y/2-bar_ey,-pad_w])
     rotate(90) 
-      translate([0,-15/2,-15])
-        cube([bar_y + 2*bar_ey,15,15]);
+      translate([0,-ebar_h/2,-ebar_h+bar_tol])
+        cube([bar_y + 2*bar_ey,ebar_h,ebar_h]);
   translate([ case_x/2-bar_h/2-pad_w, -bar_y/2-bar_ey,-pad_w])
     rotate(90) 
-      translate([0,-15/2,-15])
-        cube([bar_y + 2*bar_ey,15,15]);
+      translate([0,-ebar_h/2,-ebar_h+bar_tol])
+        cube([bar_y + 2*bar_ey,ebar_h,ebar_h]);
 }
-bolt_m3_hole_r = 3.2/2;
-bolt_m3_cap_r = 6/2;
-bolt_h = 4;
-bolt_o = 5;
-bolt_sm = 20;
+
 module pad() {
   difference() {
     translate([-case_x/2+case_r,-case_y/2+case_r,-pad_h+foot_h1]) {
       difference() {
         hull() {
-          translate([0,0,-foot_h2])
-            cylinder(r=pad_r,h=pad_h+foot_h2,$fn=case_sm);
-          translate([pad_x,0,-foot_h2])
-            cylinder(r=pad_r,h=pad_h+foot_h2,$fn=case_sm);
-          translate([0,pad_y,-foot_h2])
-            cylinder(r=pad_r,h=pad_h+foot_h2,$fn=case_sm);
+          translate([0,0,-foot_h2]) {
+            translate([0,0,pad_h+foot_h2-foot_b-eps])
+              cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
+            translate([0,0,foot_b])
+              cylinder(r=pad_r,h=pad_h+foot_h2-2*foot_b,$fn=case_sm);
+            translate([0,0,0])
+              cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
+          }
+          translate([pad_x,0,-foot_h2]) {
+            translate([0,0,pad_h+foot_h2-foot_b-eps])
+              cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
+            translate([0,0,foot_b])
+              cylinder(r=pad_r,h=pad_h+foot_h2-2*foot_b,$fn=case_sm);
+            translate([0,0,0])
+              cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
+          }
+          translate([0,pad_y,-foot_h2]) {
+            translate([0,0,pad_h+foot_h2-foot_b-eps])
+              cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
+            translate([0,0,foot_b])
+              cylinder(r=pad_r,h=pad_h+foot_h2-2*foot_b,$fn=case_sm);
+            translate([0,0,0])
+              cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
+          }
         }
-        // caster mount
+        // caster mount, shaft hole
         translate([0,0,-pad_h/2])
           cylinder(r=foot_ir,h=2*pad_h,$fn=case_sm);
+        // caster mount, case foot recess
         translate([0,0,pad_h-foot_h])
           cylinder(r=foot_r+tol,h=2*foot_h,$fn=case_sm);
+        // caster mount, washer recess
         translate([0,0,-washer_h-foot_h2])
-          cylinder(r=washer_r+tol,h=2*washer_h+foot_h2,$fn=case_sm);
+          cylinder(r=washer_r+tol,h=2*washer_h,$fn=case_sm);
+        // caster mount, M10 nut recess
         translate([0,0,pad_h-foot_h-nut_h])
-          rotate(-15)
+          rotate(-15) // prints better if laid on hypoteneuse
             cylinder(r=nut_r+tol,h=2*nut_h,$fn=6);
         // M3 retaining bolts for extrusions
         translate([pad_x+bolt_o,0,pad_h/2-foot_h1/2])
@@ -157,7 +183,7 @@ module pad() {
 
 module assembly() {
   bars();
-  //color([0.5,0.5,0.0,0.2]) ebars();
+  color([0.5,0.5,0.0,0.2]) ebars();
   case();
   color([0.5,0.3,0.3,0.9]) {
     pad();
@@ -178,7 +204,7 @@ module assembly() {
   }
 }
 
-//assembly();
+assembly();
 //bars();
 //ebars();
-color([0.5,0.3,0.3,0.7]) pad();
+//color([0.5,0.3,0.3,0.7]) pad();
