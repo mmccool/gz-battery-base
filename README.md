@@ -1,4 +1,4 @@
-# Goal Zero Lithium 1400/3000
+# Goal Zero Lithium 1400/3000 Caster Base
 A rolling base for the Goal Zero Lithium 1400 (and, probably, 3000)
 for indoor use.  This model is just some corner supports.
 You need to print four of these, then use 
