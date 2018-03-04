@@ -7,10 +7,10 @@ You need to print four of these, then use
 - 4x casters with M10 threaded rods
 - 4x M10 washers
 - 4x M10 nuts
-- 8x M3 x 10 bolts
-- 8x M3 x 8 bolts
-- 8x M3 x 6 bolts
-- 24x M3 nuts
+- 8x M3 x 10 bolts (two per corner, from inside corner)
+- 8x M3 x 8 bolts (two per corner, from bottom)
+- 8x M3 x 6 bolts (two per corner, from top)
+- 24x M3 nuts (6 per corner; two inside, two top, two bottom)
 - 8x 3mm x 30mm felt pads (I used two 1.5mm pads back to back)
 
 to complete the build.
