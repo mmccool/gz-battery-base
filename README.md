@@ -10,4 +10,5 @@ four of these, then use
 - 8x M3 x 8 bolts
 - 8x M3 x 6 bolts
 - 24x M3 nuts
+- 8x 3mm x 30mm felt pads (I used two 1.5mm pads back to back)
 to complete the build.
