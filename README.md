@@ -1,7 +1,7 @@
 # Goal Zero Lithium 1400/3000
 A rolling base for the Goal Zero Lithium 1400 (and, probably, 3000)
-for indoor use.  This model is just some corners supports, you need print
-four of these, then use 
+for indoor use.  This model is just some corner supports.
+You need to print four of these, then use 
 
 - 2x 5cm and 2x 10cm OpenBeam (or MakerBeam) 1515 extrusions
 - 4x casters with M10 threaded rods
