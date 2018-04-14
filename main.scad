@@ -214,28 +214,46 @@ module pad() {
   }
 }
 
+module pad_assembly(shelf=false) {
+  pad();
+  translate([-case_x/2+case_r,case_y/2-case_r,0])
+    rotate(-90) 
+      translate([case_x/2-case_r,case_y/2-case_r,0])
+        pad();
+  translate([case_x/2-case_r,-case_y/2+case_r,0])
+    rotate(90) 
+      translate([case_x/2-case_r,case_y/2-case_r,0])
+        pad();
+  translate([case_x/2-case_r,case_y/2-case_r,0])
+    rotate(180) 
+      translate([case_x/2-case_r,case_y/2-case_r,0])
+        pad();
+}
+
+rod_r = 15/2;
+rod_z = 700;
+rod_sm = base_sm;
+module rod() {
+  translate([0,0,case_zo+case_h])
+    cylinder(r=rod_r,h=rod_z,$fn=rod_sm);
+}
+module rod_assembly() {
+  translate([-case_x/2+case_r,-case_y/2+case_r,0]) rod();
+  translate([ case_x/2-case_r,-case_y/2+case_r,0]) rod();
+  translate([-case_x/2+case_r, case_y/2-case_r,0]) rod();
+  translate([ case_x/2-case_r, case_y/2-case_r,0]) rod();
+}
+
+shelf_rod_z = 700;
+shelf_z = 500;
 module assembly() {
   bars();
   color([0.5,0.5,0.0,0.2]) ebars();
-  //case();
-  color([0.5,0.3,0.3,0.9]) {
-    pad();
-///*
-    translate([-case_x/2+case_r,case_y/2-case_r,0])
-      rotate(-90) 
-        translate([case_x/2-case_r,case_y/2-case_r,0])
-          pad();
-    translate([case_x/2-case_r,-case_y/2+case_r,0])
-      rotate(90) 
-        translate([case_x/2-case_r,case_y/2-case_r,0])
-          pad();
-    translate([case_x/2-case_r,case_y/2-case_r,0])
-      rotate(180) 
-        translate([case_x/2-case_r,case_y/2-case_r,0])
-          pad();
-//*/
-  }
-
+  case();
+  rod_assembly();
+  color([0.5,0.3,0.3,0.9]) pad_assembly(shelf=false);
+  color([0.5,0.3,0.3,0.9]) 
+    translate([0,0,case_zo+case_h+shelf_z]) pad_assembly(shelf=true);
 }
 
 assembly();
