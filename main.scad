@@ -21,7 +21,7 @@ case_y = 358;
 case_r = 17;
 case_h = 240;
 case_fh = 5;
-case_sm = 100;
+case_sm = 30;
 case_zo = foot_h;
 
 pad_w = 4;
@@ -44,6 +44,7 @@ ebar_h = bar_h + 2*bar_tol;
 
 bolt_m3_hole_r = 3.2/2;
 bolt_m3_cap_r = 6.2/2 + tol;
+bolt_m3_nut_r = 6.2/(cos(30)*2) + tol;
 bolt_h = 8;
 bolt_h2 = 6;
 bolt_o = 5;
@@ -112,7 +113,7 @@ module ebars() {
     rotate(90) 
       translate([0,-ebar_h/2,-ebar_h+bar_tol])
         cube([bar_y + 2*bar_ey,ebar_h,ebar_h]);
-  translate([ case_x/2-bar_h/2-bar_w, -bar_y/2-bar_ey,-pad_w])
+  translate([ case_x/2-bar_h/2-pad_w, -bar_y/2-bar_ey,-pad_w])
     rotate(90) 
       translate([0,-ebar_h/2,-ebar_h+bar_tol])
         cube([bar_y + 2*bar_ey,ebar_h,ebar_h]);
@@ -179,13 +180,15 @@ module pad() {
           rotate([0,0,0]) {
             cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
             translate([0,0,bolt_h2])
-              cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+              rotate(30)
+                cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
           }
         translate([-bolt_q,pad_y+bolt_o,pad_h/2+foot_h1/2])
           rotate([0,0,0]) {
             cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
             translate([0,0,bolt_h2])
-              cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+              rotate(0)
+                cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
           }
         // M3 retaining bolts for extrusions (bottom)
         translate([pad_x+bolt_o,-bolt_q,pad_h/2-foot_h1-4])
@@ -232,9 +235,13 @@ module assembly() {
           pad();
 //*/
   }
+
 }
 
-//assembly();
+assembly();
 //bars();
 //ebars();
-color([0.5,0.3,0.3,0.7]) pad();
+//color([0.5,0.3,0.3,0.7]) pad();
+
+echo("bars: ",bar_x," and ",bar_y);
+echo("extended bars: ",bar_x+2*bar_ex," and ",bar_y+2*bar_ey);
