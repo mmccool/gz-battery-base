@@ -58,10 +58,10 @@ nut_r = 20/2;
 nut_h = 8;
 
 rod_r = 13/2;
-rod_z = 700;
+rod_z = 300;
 rod_sm = 4*sm_base;
 
-shelf_z = 500;
+shelf_z = rod_z - 15;
 shelf_h = 5;
 
 insert_r1 = 17.9/2;
@@ -376,9 +376,15 @@ module assembly() {
 assembly();
 //bars();
 //ebars();
-//color([0.5,0.3,0.3,0.7]) pad(shelf=false);
+
 //color([0.3,0.3,0.3,0.9]) translate([-case_x/2+case_r,-case_y/2+case_r,insert_z-pad_h+shelf_h]) insert();
-//translate([0,0,case_zo+case_h+shelf_z]) pad(shelf=true);
+
+// 3d printing
+//color([0.5,0.3,0.3,0.7]) pad(shelf=false); // base
+//translate([0,0,case_zo+case_h+shelf_z]) pad(shelf=true); // shelf support
+
+// laser cutting (export as DXF, then import to inkscape and convert to PDF)
+//shelf_plate();
 
 echo("bars: ",bar_x," and ",bar_y);
 echo("extended bars: ",bar_x+2*bar_ex," and ",bar_y+2*bar_ey);
