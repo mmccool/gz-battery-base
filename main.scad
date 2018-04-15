@@ -65,17 +65,17 @@ shelf_z = 500;
 shelf_h = 5;
 
 insert_r1 = 17.9/2;
-insert_r2 = 16.8/2;
+insert_r2 = 16.6/2;
 insert_h = 31.34;
-insert_z = shelf_z;
+insert_z = shelf_z - foot_h;
 insert_sm = 4*sm_base;
-insert_tol = 0.2;
+insert_tol = 0.1;
 insert_R1 = insert_r1 + insert_tol;
 insert_R2 = insert_r2 + insert_tol;
 
 shelf_R = 22/2;
-//shelf_H = shelf_h + 1;
-shelf_H = 0;
+shelf_eh = 3;
+shelf_H = shelf_h + shelf_eh;
 shelf_sm = 4*sm_base;
 
 module foot() {
@@ -172,7 +172,14 @@ module pad(shelf=false) {
             }
           }
           if (shelf && shelf_H > 0) {
-             cylinder(r=shelf_R,h=pad_h+shelf_H,$fm=shelf_sm);
+             hull() {
+               cylinder(r=shelf_R,h=pad_h+shelf_H,$fn=shelf_sm);
+               rotate(45)
+                 translate([-tol+cos(45)*pad_x+pad_r,
+                            -shelf_R,
+                            pad_h-tol-foot_b])
+                   cube([tol,2*shelf_R,shelf_H+foot_b+tol]);
+             }
           }
         }
         if (shelf) {
@@ -277,7 +284,6 @@ module rod_assembly() {
   translate([ case_x/2-case_r, case_y/2-case_r,0]) rod();
 }
 
-
 module insert() {
   translate([0,0,case_zo+case_h])
     difference() {
@@ -293,7 +299,56 @@ module insert_assembly() {
   translate([ case_x/2-case_r, case_y/2-case_r,0]) insert();
 }
 
+module shelf_plate() {
+  difference() {
+    hull() {
+      translate([-case_x/2+case_r,-case_y/2+case_r])
+        circle(r=pad_r,h=case_h,$fn=case_sm);
+      translate([ case_x/2-case_r,-case_y/2+case_r])
+        circle(r=pad_r,h=case_h,$fn=case_sm);
+      translate([-case_x/2+case_r, case_y/2-case_r])
+        circle(r=pad_r,h=case_h,$fn=case_sm);
+      translate([ case_x/2-case_r, case_y/2-case_r])
+        circle(r=pad_r,h=case_h,$fn=case_sm);
+    }
+    hull() {
+      translate([-case_x/2+case_r,-case_y/2+case_r])
+        circle(r=shelf_R,h=case_h,$fn=case_sm);
+      translate([-case_x/2+case_r,-case_y/2+case_r])
+        rotate(45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R,h=case_h,$fn=case_sm);
+    }
+    hull() {
+      translate([ case_x/2-case_r,-case_y/2+case_r])
+        circle(r=shelf_R,h=case_h,$fn=case_sm);
+      translate([ case_x/2-case_r,-case_y/2+case_r])
+        rotate(90+45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R,h=case_h,$fn=case_sm);
+    }
+    hull() {
+      translate([-case_x/2+case_r, case_y/2-case_r])
+        circle(r=shelf_R,h=case_h,$fn=case_sm);
+      translate([-case_x/2+case_r, case_y/2-case_r])
+        rotate(-45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R,h=case_h,$fn=case_sm);
+    }
+    hull() {
+      translate([ case_x/2-case_r, case_y/2-case_r])
+        circle(r=shelf_R,h=case_h,$fn=case_sm);
+      translate([ case_x/2-case_r, case_y/2-case_r])
+        rotate(2*90+45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R,h=case_h,$fn=case_sm);
+    }
+  }
+}
 
+module shelf() {
+  linear_extrude(shelf_h) shelf_plate();
+}
 
 module assembly() {
   bars();
@@ -303,6 +358,7 @@ module assembly() {
   color([0.5,0.3,0.3,0.9]) 
     pad_assembly(shelf=false);
   rod_assembly();
+  // shelf
   color([0.3,0.3,0.3,0.9]) 
     translate([0,0,insert_z-pad_h+shelf_h]) 
       insert_assembly();
@@ -312,13 +368,17 @@ module assembly() {
   color([0.5,0.3,0.3,0.9]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       pad_assembly(shelf=true);
+  color([0.1,0.1,0.1,0.3])
+    translate([0,0,case_zo+case_h+shelf_z+foot_h1+shelf_eh-tol])
+      shelf();
 }
 
 assembly();
 //bars();
 //ebars();
 //color([0.5,0.3,0.3,0.7]) pad(shelf=false);
-//pad(shelf=true);
+//color([0.3,0.3,0.3,0.9]) translate([-case_x/2+case_r,-case_y/2+case_r,insert_z-pad_h+shelf_h]) insert();
+//translate([0,0,case_zo+case_h+shelf_z]) pad(shelf=true);
 
 echo("bars: ",bar_x," and ",bar_y);
 echo("extended bars: ",bar_x+2*bar_ex," and ",bar_y+2*bar_ey);
