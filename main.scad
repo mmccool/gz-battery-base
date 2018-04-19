@@ -7,7 +7,7 @@ include <smooth_model.scad>
 //include <smooth_make.scad>
 include <bolt_params.scad>
 use <bolts.scad>
-use <beam.scad>
+use <bar.scad>
 
 foot_h = 5;
 foot_h1 = 4;
@@ -123,21 +123,21 @@ module bars() {
   }
 }
 se = (1-tol);
-module ebars() {
+module ebars(t=0) {
   translate([-bar_x/2-bar_ex,-case_y/2+bar_h/2+pad_w,-pad_w]) 
-    translate([0,-ebar_h/2,-ebar_h+bar_tol])
-      cube([bar_x+2*bar_ex,ebar_h,ebar_h]);
+    translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+      cube([bar_x+2*bar_ex+2+2*t,ebar_h+2*t,ebar_h+2*t]);
   translate([-bar_x/2-bar_ex, case_y/2-bar_h/2-pad_w,-pad_w])
-    translate([0,-ebar_h/2,-ebar_h+bar_tol])
-      cube([bar_x+2*bar_ex,ebar_h,ebar_h]);
+    translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+      cube([bar_x+2*bar_ex+2*t,ebar_h+2*t,ebar_h+2*t]);
   translate([-case_x/2+bar_h/2+pad_w, -bar_y/2-bar_ey,-pad_w])
     rotate(90) 
-      translate([0,-ebar_h/2,-ebar_h+bar_tol])
-        cube([bar_y + 2*bar_ey,ebar_h,ebar_h]);
+      translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+        cube([bar_y + 2*bar_ey+2*t,ebar_h+2*t,ebar_h+2*t]);
   translate([ case_x/2-bar_h/2-pad_w, -bar_y/2-bar_ey,-pad_w])
     rotate(90) 
-      translate([0,-ebar_h/2,-ebar_h+bar_tol])
-        cube([bar_y + 2*bar_ey,ebar_h,ebar_h]);
+      translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+        cube([bar_y + 2*bar_ey+2*t,ebar_h+2*t,ebar_h+2*t]);
 }
 bolt_cap_h = 0;
 module pad(shelf=false) {
@@ -351,20 +351,21 @@ module shelf() {
 }
 
 module assembly() {
+  /*
   bars();
-  color([0.5,0.5,0.0,0.2]) 
-    ebars();
+  //color([0.5,0.5,0.0,0.2]) 
+  // ebars(tol);
   case();
   color([0.5,0.3,0.3,0.9]) 
     pad_assembly(shelf=false);
+  */
   rod_assembly();
-  // shelf
   color([0.3,0.3,0.3,0.9]) 
     translate([0,0,insert_z-pad_h+shelf_h]) 
       insert_assembly();
   color([0.5,0.5,0.0,0.2]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
-      ebars();
+      ebars(tol);
   color([0.5,0.3,0.3,0.9]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       pad_assembly(shelf=true);
