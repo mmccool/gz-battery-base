@@ -41,7 +41,6 @@ bar_tol = 0.4/2;
 bar_h = 15;
 ebar_h = bar_h + 2*bar_tol;
 
-
 bolt_m3_hole_r = 3.2/2;
 bolt_m3_cap_r = 6.2/2 + tol;
 bolt_m3_nut_r = 6.2/(cos(30)*2) + tol;
@@ -74,6 +73,7 @@ insert_R1 = insert_r1 + insert_tol;
 insert_R2 = insert_r2 + insert_tol;
 
 shelf_R = 22/2;
+shelf_R_tol = 0.1;
 shelf_eh = 3;
 shelf_H = shelf_h + shelf_eh;
 shelf_sm = 4*sm_base;
@@ -303,45 +303,45 @@ module shelf_plate() {
   difference() {
     hull() {
       translate([-case_x/2+case_r,-case_y/2+case_r])
-        circle(r=pad_r,h=case_h,$fn=case_sm);
+        circle(r=pad_r,$fn=case_sm);
       translate([ case_x/2-case_r,-case_y/2+case_r])
-        circle(r=pad_r,h=case_h,$fn=case_sm);
+        circle(r=pad_r,$fn=case_sm);
       translate([-case_x/2+case_r, case_y/2-case_r])
-        circle(r=pad_r,h=case_h,$fn=case_sm);
+        circle(r=pad_r,$fn=case_sm);
       translate([ case_x/2-case_r, case_y/2-case_r])
-        circle(r=pad_r,h=case_h,$fn=case_sm);
+        circle(r=pad_r,$fn=case_sm);
     }
     hull() {
       translate([-case_x/2+case_r,-case_y/2+case_r])
-        circle(r=shelf_R,h=case_h,$fn=case_sm);
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
       translate([-case_x/2+case_r,-case_y/2+case_r])
         rotate(45)
           translate([cos(45)*pad_x+pad_r,0,0])
-            circle(r=shelf_R,h=case_h,$fn=case_sm);
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
     }
     hull() {
       translate([ case_x/2-case_r,-case_y/2+case_r])
-        circle(r=shelf_R,h=case_h,$fn=case_sm);
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
       translate([ case_x/2-case_r,-case_y/2+case_r])
         rotate(90+45)
           translate([cos(45)*pad_x+pad_r,0,0])
-            circle(r=shelf_R,h=case_h,$fn=case_sm);
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
     }
     hull() {
       translate([-case_x/2+case_r, case_y/2-case_r])
-        circle(r=shelf_R,h=case_h,$fn=case_sm);
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
       translate([-case_x/2+case_r, case_y/2-case_r])
         rotate(-45)
           translate([cos(45)*pad_x+pad_r,0,0])
-            circle(r=shelf_R,h=case_h,$fn=case_sm);
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
     }
     hull() {
       translate([ case_x/2-case_r, case_y/2-case_r])
-        circle(r=shelf_R,h=case_h,$fn=case_sm);
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
       translate([ case_x/2-case_r, case_y/2-case_r])
         rotate(2*90+45)
           translate([cos(45)*pad_x+pad_r,0,0])
-            circle(r=shelf_R,h=case_h,$fn=case_sm);
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
     }
   }
 }
