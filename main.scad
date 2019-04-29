@@ -29,8 +29,14 @@ pad_h = 2*pad_w + 15 + foot_h1;
 pad_x = 40;
 pad_y = 40;
 pad_r = case_r+2;
-pad_rr = 30/2 + tol;
+pad_rr = 30/2 + 0.5;
 pad_hh = 3.4 - 1;
+pad_xo = -5;
+pad_yo = -5;
+pad_xo2 = -19;
+pad_yo2 = -19;
+pad_xd = pad_xo2 - pad_xo;
+pad_yd = pad_yo2 - pad_yo;
 
 bar_w = pad_w + 2;
 bar_y = 300;
@@ -42,6 +48,7 @@ bar_h = 15;
 ebar_h = bar_h + 2*bar_tol;
 
 bolt_m3_hole_r = 3.2/2;
+bolt_m3_chole_r = 2.9/2;
 bolt_m3_cap_r = 6.2/2 + tol;
 bolt_m3_nut_r = 6.2/(cos(30)*2) + tol;
 bolt_h = 8;
@@ -74,7 +81,7 @@ insert_R2 = insert_r2 + insert_tol;
 
 shelf_R = 22/2;
 shelf_R_tol = 0.1;
-shelf_eh = 3;
+shelf_eh = 0;
 shelf_H = shelf_h + shelf_eh;
 shelf_sm = 4*sm_base;
 
@@ -171,6 +178,7 @@ module pad(shelf=false) {
                 cylinder(r=pad_r-foot_b,h=foot_b+eps,$fn=case_sm);
             }
           }
+          // shelf cutout key
           if (shelf && shelf_H > 0) {
              hull() {
                cylinder(r=shelf_R,h=pad_h+shelf_H,$fn=shelf_sm);
@@ -206,17 +214,46 @@ module pad(shelf=false) {
               cylinder(r=nut_r+tol,h=2*nut_h,$fn=6);
         }
         // M3 retaining bolts for extrusions (back)
-        translate([pad_x+bolt_o,0,pad_h/2-foot_h1/2])
+        translate([pad_x+bolt_o+pad_xo,0,pad_h/2-foot_h1/2])
           rotate([-90,0,0]) {
             cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
             translate([0,0,bolt_h])
-              cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+              cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
           }
-        translate([0,pad_y+bolt_o,pad_h/2-foot_h1/2])
+        translate([0,pad_y+bolt_o+pad_yo,pad_h/2-foot_h1/2])
           rotate([0,90,0]) {
             cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
             translate([0,0,bolt_h])
-              cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+              rotate(30) cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
+          }
+        translate([pad_x+bolt_o+pad_xo2,0,pad_h/2-foot_h1/2])
+          rotate([-90,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+            translate([0,0,bolt_h])
+              cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
+          }
+        translate([0,pad_y+bolt_o+pad_yo2,pad_h/2-foot_h1/2])
+          rotate([0,90,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+            translate([0,0,bolt_h])
+              rotate(30) cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
+          }
+        // M3 retaining bolts for extrusions (front)
+        translate([pad_x+bolt_o+pad_xo,-pad_x,pad_h/2-foot_h1/2])
+          rotate([-90,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([-pad_x,pad_y+bolt_o+pad_yo,pad_h/2-foot_h1/2])
+          rotate([0,90,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([pad_x+bolt_o+pad_xo2,-pad_x,pad_h/2-foot_h1/2])
+          rotate([-90,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([-pad_x,pad_y+bolt_o+pad_yo2,pad_h/2-foot_h1/2])
+          rotate([0,90,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
           }
         // M3 retaining bolts for extrusions (top)
         translate([pad_x+bolt_o,-bolt_q,pad_h/2+foot_h1/2])
@@ -227,6 +264,20 @@ module pad(shelf=false) {
                 cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
           }
         translate([-bolt_q,pad_y+bolt_o,pad_h/2+foot_h1/2])
+          rotate([0,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+            translate([0,0,bolt_h2])
+              rotate(-15)
+                cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
+          }
+        translate([pad_x+bolt_o+pad_xd,-bolt_q,pad_h/2+foot_h1/2])
+          rotate([0,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+            translate([0,0,bolt_h2])
+              rotate(-15)
+                cylinder(r=bolt_m3_nut_r,h=pad_x,$fn=6);
+          }
+        translate([-bolt_q,pad_y+bolt_o+pad_yd,pad_h/2+foot_h1/2])
           rotate([0,0,0]) {
             cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
             translate([0,0,bolt_h2])
@@ -245,6 +296,47 @@ module pad(shelf=false) {
             cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
             translate([0,0,bolt_h2])
               cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([pad_x+bolt_o+pad_xd,-bolt_q,pad_h/2-foot_h1-4])
+          rotate([180,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+            translate([0,0,bolt_h2])
+              cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([-bolt_q,pad_y+bolt_o+pad_yd,pad_h/2-foot_h1-4])
+          rotate([180,0,0]) {
+            cylinder(r=bolt_m3_hole_r,h=pad_x,$fn=bolt_sm);
+            translate([0,0,bolt_h2])
+              cylinder(r=bolt_m3_cap_r,h=pad_x,$fn=bolt_sm);
+          }
+        // HW mounting holes
+        translate([pad_x+bolt_o,-bolt_q+bar_h,pad_h/2-foot_h1-4])
+          rotate([180,0,0]) {
+            cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([-bolt_q+bar_h,pad_y+bolt_o,pad_h/2-foot_h1-4])
+          rotate([180,0,0]) {
+            cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([pad_x+bolt_o+pad_xd,-bolt_q+bar_h,pad_h/2-foot_h1-4])
+          rotate([180,0,0]) {
+            cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([-bolt_q+bar_h,pad_y+bolt_o+pad_yd,pad_h/2-foot_h1-4])
+          rotate([180,0,0]) {
+            cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([pad_x+bolt_o+pad_xo-5,0,pad_h/2-foot_h1/2])
+          rotate([0,0,-45]) rotate([-90,0,0]) {
+            translate([0,0,15]) cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([pad_x+bolt_o+pad_xo-5,0,pad_h/2-foot_h1/2])
+          rotate([0,0,-45]) rotate([-90,0,0]) {
+            translate([0,0,15]) cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
+          }
+        translate([0,pad_y+bolt_o+pad_yo-5,pad_h/2-foot_h1/2])
+          rotate([0,0,45]) rotate([0,90,0]) {
+            translate([0,0,15]) cylinder(r=bolt_m3_chole_r,h=pad_x,$fn=bolt_sm);
           }
         // indent for cushions
         translate([pad_x,0,pad_h-pad_hh])
@@ -351,14 +443,14 @@ module shelf() {
 }
 
 module assembly() {
-  /*
+  
   bars();
   //color([0.5,0.5,0.0,0.2]) 
   // ebars(tol);
   case();
   color([0.5,0.3,0.3,0.9]) 
     pad_assembly(shelf=false);
-  */
+  
   rod_assembly();
   color([0.3,0.3,0.3,0.9]) 
     translate([0,0,insert_z-pad_h+shelf_h]) 
