@@ -391,18 +391,23 @@ module insert_assembly() {
   translate([ case_x/2-case_r, case_y/2-case_r,0]) insert();
 }
 
+module base_plate() {
+  hull() {
+    translate([-case_x/2+case_r,-case_y/2+case_r])
+      circle(r=pad_r,$fn=case_sm);
+    translate([ case_x/2-case_r,-case_y/2+case_r])
+      circle(r=pad_r,$fn=case_sm);
+    translate([-case_x/2+case_r, case_y/2-case_r])
+      circle(r=pad_r,$fn=case_sm);
+    translate([ case_x/2-case_r, case_y/2-case_r])
+      circle(r=pad_r,$fn=case_sm);
+  }
+}
+
 module shelf_plate() {
   difference() {
-    hull() {
-      translate([-case_x/2+case_r,-case_y/2+case_r])
-        circle(r=pad_r,$fn=case_sm);
-      translate([ case_x/2-case_r,-case_y/2+case_r])
-        circle(r=pad_r,$fn=case_sm);
-      translate([-case_x/2+case_r, case_y/2-case_r])
-        circle(r=pad_r,$fn=case_sm);
-      translate([ case_x/2-case_r, case_y/2-case_r])
-        circle(r=pad_r,$fn=case_sm);
-    }
+    base_plate();
+    // insert slot
     hull() {
       translate([-case_x/2+case_r,-case_y/2+case_r])
         circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
@@ -442,28 +447,95 @@ module shelf() {
   linear_extrude(shelf_h) shelf_plate();
 }
 
+module bot_bolt_holes() {
+  translate([pad_x+bolt_o,-bolt_q+bar_h])
+      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  translate([-bolt_q+bar_h,pad_y+bolt_o])
+      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  translate([pad_x+bolt_o+pad_xd,-bolt_q+bar_h])
+      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  translate([-bolt_q+bar_h,pad_y+bolt_o+pad_yd])
+      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+}
+
+module bot_shelf_plate() {
+  difference() {
+    base_plate();
+    // wiring and rod holes
+    {
+      translate([-case_x/2+case_r,-case_y/2+case_r])
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+      translate([-case_x/2+case_r,-case_y/2+case_r])
+        rotate(45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+    }
+    {
+      translate([ case_x/2-case_r,-case_y/2+case_r])
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+      translate([ case_x/2-case_r,-case_y/2+case_r])
+        rotate(90+45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+    }
+    {
+      translate([-case_x/2+case_r, case_y/2-case_r])
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+      translate([-case_x/2+case_r, case_y/2-case_r])
+        rotate(-45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+    }
+    {
+      translate([ case_x/2-case_r, case_y/2-case_r])
+        circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+      translate([ case_x/2-case_r, case_y/2-case_r])
+        rotate(2*90+45)
+          translate([cos(45)*pad_x+pad_r,0,0])
+            circle(r=shelf_R+shelf_R_tol,$fn=case_sm);
+    }
+    // bolt holes
+    translate([-case_x/2+case_r,-case_y/2+case_r]) 
+      bot_bolt_holes();
+    translate([-case_x/2+case_r,case_y/2-case_r])
+      rotate(-90) bot_bolt_holes();
+    translate([case_x/2-case_r,-case_y/2+case_r,0])
+      rotate(90) bot_bolt_holes(); 
+    translate([case_x/2-case_r,case_y/2-case_r,0])
+      rotate(180) bot_bolt_holes(); 
+  }
+}
+ 
+module bot_shelf() {
+  linear_extrude(shelf_h) bot_shelf_plate();
+}
+
 module assembly() {
-  
-  bars();
-  //color([0.5,0.5,0.0,0.2]) 
-  // ebars(tol);
-  case();
-  color([0.5,0.3,0.3,0.9]) 
+  //color([0.1,0.1,0.1,1.0]) bars();
+  color([0.1,0.1,0.1,0.8]) 
+    ebars(tol);
+  color([0.3,0.3,0.4,1.0])
+    case();
+  color([0.3,0.3,0.3,0.9]) 
     pad_assembly(shelf=false);
   
-  rod_assembly();
+  color([0.9,0.9,0.9,0.9]) 
+    rod_assembly();
   color([0.3,0.3,0.3,0.9]) 
     translate([0,0,insert_z-pad_h+shelf_h]) 
       insert_assembly();
-  color([0.5,0.5,0.0,0.2]) 
+  color([0.1,0.1,0.1,0.8]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       ebars(tol);
-  color([0.5,0.3,0.3,0.9]) 
+  color([0.3,0.3,0.3,0.9]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       pad_assembly(shelf=true);
   color([0.1,0.1,0.1,0.3])
     translate([0,0,case_zo+case_h+shelf_z+foot_h1+shelf_eh-tol])
       shelf();
+  color([0.1,0.1,0.1,0.3])
+    translate([0,0,case_zo+case_h+shelf_z-shelf_h-pad_h-tol])
+      bot_shelf();
 }
 
 assembly();
@@ -478,6 +550,7 @@ assembly();
 
 // laser cutting (export as DXF, then import to inkscape and convert to PDF)
 //shelf_plate();
+//bot_shelf_plate();
 
 echo("bars: ",bar_x," and ",bar_y);
 echo("extended bars: ",bar_x+2*bar_ex," and ",bar_y+2*bar_ey);
