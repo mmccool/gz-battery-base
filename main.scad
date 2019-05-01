@@ -449,13 +449,22 @@ module shelf() {
 
 module bot_bolt_holes() {
   translate([pad_x+bolt_o,-bolt_q+bar_h])
-      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
   translate([-bolt_q+bar_h,pad_y+bolt_o])
-      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
   translate([pad_x+bolt_o+pad_xd,-bolt_q+bar_h])
-      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
   translate([-bolt_q+bar_h,pad_y+bolt_o+pad_yd])
-      circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  
+  translate([pad_x+bolt_o,-bolt_q])
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  translate([-bolt_q,pad_y+bolt_o])
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  translate([pad_x+bolt_o+pad_xd,-bolt_q])
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
+  translate([-bolt_q,pad_y+bolt_o+pad_yd])
+    circle(r=bolt_m3_hole_r+tol,$fn=bolt_sm);
 }
 
 module bot_shelf_plate() {
@@ -518,6 +527,9 @@ module assembly() {
     case();
   color([0.3,0.3,0.3,0.9]) 
     pad_assembly(shelf=false);
+  //color([0.1,0.1,0.1,0.3])
+  //  translate([0,0,-shelf_h-pad_h-tol])
+  //    bot_shelf();
   
   color([0.9,0.9,0.9,0.9]) 
     rod_assembly();
