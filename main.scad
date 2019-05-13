@@ -9,6 +9,10 @@ include <bolt_params.scad>
 use <bolts.scad>
 use <bar.scad>
 
+//tol = 0.05;
+//eps = 0.0001;
+//sm_base = 10;
+
 foot_h = 5;
 foot_h1 = 4;
 foot_h2 = 4;
@@ -142,6 +146,24 @@ module ebars(t=0) {
       translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
         cube([bar_y + 2*bar_ey+2*t,ebar_h+2*t,ebar_h+2*t]);
   translate([ case_x/2-bar_h/2-pad_w, -bar_y/2-bar_ey,-pad_w])
+    rotate(90) 
+      translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+        cube([bar_y + 2*bar_ey+2*t,ebar_h+2*t,ebar_h+2*t]);
+}
+ruler_x = 217;
+ruler_y = 114;
+module ruler(t=0) {
+  translate([-ruler_y/2,-case_y/2+bar_h/2+pad_w-bar_h,-pad_w]) 
+    translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+      cube([ruler_y,ebar_h+2*t,ebar_h+2*t]);
+  translate([-ruler_y/2, case_y/2-bar_h/2-pad_w+bar_h,-pad_w])
+    translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+      cube([ruler_y,,ebar_h+2*t,ebar_h+2*t]);
+  translate([-case_x/2+bar_h/2+pad_w-bar_h, -bar_y/2-bar_ey,-pad_w])
+    rotate(90) 
+      translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
+        cube([bar_y + 2*bar_ey+2*t,ebar_h+2*t,ebar_h+2*t]);
+  translate([ case_x/2-bar_h/2-pad_w+bar_h, -bar_y/2-bar_ey,-pad_w])
     rotate(90) 
       translate([-t,-ebar_h/2-t,-ebar_h+bar_tol-t])
         cube([bar_y + 2*bar_ey+2*t,ebar_h+2*t,ebar_h+2*t]);
@@ -520,6 +542,7 @@ module bot_shelf() {
 }
 
 module assembly() {
+    /*
   //color([0.1,0.1,0.1,1.0]) bars();
   color([0.1,0.1,0.1,0.8]) 
     ebars(tol);
@@ -536,18 +559,26 @@ module assembly() {
   color([0.3,0.3,0.3,0.9]) 
     translate([0,0,insert_z-pad_h+shelf_h]) 
       insert_assembly();
-  color([0.1,0.1,0.1,0.8]) 
+    */
+  color([0.0,1.0,0.0,1.0]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       ebars(tol);
-  color([0.3,0.3,0.3,0.9]) 
+      /*
+  color([1.0,0.0,0.0,1.0]) 
+    translate([0,0,case_zo+case_h+shelf_z]) 
+      ruler();
+      */
+  color([0.3,0.3,0.3,1.0]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       pad_assembly(shelf=true);
+      /*
   color([0.1,0.1,0.1,0.3])
     translate([0,0,case_zo+case_h+shelf_z+foot_h1+shelf_eh-tol])
       shelf();
   color([0.1,0.1,0.1,0.3])
     translate([0,0,case_zo+case_h+shelf_z-shelf_h-pad_h-tol])
       bot_shelf();
+      */
 }
 
 assembly();
