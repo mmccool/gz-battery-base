@@ -426,6 +426,60 @@ module base_plate() {
   }
 }
 
+ds_c = 0*bar_h/2;
+ds_e = 4;
+ds_x = case_x - case_r - bar_h/2 + ds_c;
+ds_y = case_y - case_r - bar_h/2 + ds_c;
+ds_r = 5;
+ds_h1 = 1;
+ds_h2 = 2;
+ds_ex = (case_x - ruler_y)/2;
+ds_ey = (case_y - ruler_x)/2;
+
+ds_xx = 167 + 2;
+ds_yy = 208 + 2;
+ds_rr = 3;
+
+module ds_plate() {
+  hull() {
+    translate([-ds_x/2+ds_r+ds_ex+ds_e,-ds_y/2+ds_r])
+      circle(r=ds_r,$fn=case_sm);
+    translate([-ds_x/2+ds_r,-ds_y/2+ds_r+ds_ey+ds_e])
+      circle(r=ds_r,$fn=case_sm);
+      
+    translate([ ds_x/2-ds_r-ds_ex-ds_e,-ds_y/2+ds_r])
+      circle(r=ds_r,$fn=case_sm);
+    translate([ ds_x/2-ds_r,-ds_y/2+ds_r+ds_ey+ds_e])
+      circle(r=ds_r,$fn=case_sm);
+      
+    translate([-ds_x/2+ds_r+ds_ex+ds_e, ds_y/2-ds_r])
+      circle(r=ds_r,$fn=case_sm);
+    translate([-ds_x/2+ds_r, ds_y/2-ds_r-ds_ey-ds_e])
+      circle(r=ds_r,$fn=case_sm);
+      
+    translate([ ds_x/2-ds_r-ds_ex-ds_e, ds_y/2-ds_r])
+      circle(r=ds_r,$fn=case_sm);
+    translate([ ds_x/2-ds_r, ds_y/2-ds_r-ds_ey-ds_e])
+      circle(r=ds_r,$fn=case_sm);
+  }
+}
+module ds_shelf(h=ds_h2) {
+    linear_extrude(h) ds_plate();
+}
+module display_plate_1() {
+    difference() {
+        ds_plate();
+        translate([-ds_xx/2,-ds_yy/2]) square([ds_xx,ds_yy]);
+        translate([-ds_xx/2,-ds_yy/2]) circle(r=ds_rr,$fn=5*sm_base);
+        translate([ ds_xx/2,-ds_yy/2]) circle(r=ds_rr,$fn=5*sm_base);
+        translate([-ds_xx/2, ds_yy/2]) circle(r=ds_rr,$fn=5*sm_base);
+        translate([ ds_xx/2, ds_yy/2]) circle(r=ds_rr,$fn=5*sm_base);
+    }
+}
+module display_shelf_1(h=ds_h1) {
+    linear_extrude(h) display_plate_1();
+}
+
 module shelf_plate() {
   difference() {
     base_plate();
@@ -571,6 +625,9 @@ module assembly() {
   color([0.3,0.3,0.3,1.0]) 
     translate([0,0,case_zo+case_h+shelf_z]) 
       pad_assembly(shelf=true);
+  color([0.1,0.1,0.1,0.3])
+    translate([0,0,case_zo+case_h+shelf_z+foot_h1+shelf_eh-tol])
+      display_shelf_1();
       /*
   color([0.1,0.1,0.1,0.3])
     translate([0,0,case_zo+case_h+shelf_z+foot_h1+shelf_eh-tol])
@@ -581,7 +638,7 @@ module assembly() {
       */
 }
 
-assembly();
+//assembly();
 //bars();
 //ebars();
 
@@ -594,6 +651,7 @@ assembly();
 // laser cutting (export as DXF, then import to inkscape and convert to PDF)
 //shelf_plate();
 //bot_shelf_plate();
+display_plate_1();
 
 echo("bars: ",bar_x," and ",bar_y);
 echo("extended bars: ",bar_x+2*bar_ex," and ",bar_y+2*bar_ey);
